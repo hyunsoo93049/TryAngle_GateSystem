@@ -82,21 +82,22 @@ cd frontend
 npm install
 ```
 
-### 4. API Key Configuration
+### 4. API Key Configuration (Optional)
 
-This project uses GPT-4o for generating natural language feedback. You need to obtain an OpenAI API key.
+This project optionally supports comparison with GPT-4o analysis results. If you want to compare our model's output with GPT-4o's analysis, you can configure the API key.
 
-1. Go to [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Sign up or log in to your account
-3. Navigate to "API Keys" and create a new secret key
-4. Open `frontend/index.tsx` and replace the placeholder with your API key:
+1. Go to [GitHub Models](https://github.com/marketplace/models) or [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Sign up and obtain an API key
+3. Open `frontend/App.tsx` and replace the placeholder with your API key:
 
 ```typescript
-// frontend/index.tsx (around line 14)
-const OPENAI_API_KEY = "your-api-key-here";
+// frontend/App.tsx (around line 14)
+const API_KEYS = [
+  "your-api-key-here", // Replace with your key
+];
 ```
 
-**Note:** Keep your API key private. Do not commit it to public repositories.
+**Note:** This is optional. The core analysis works without GPT API. Keep your API key private.
 
 ## Usage
 
@@ -310,21 +311,22 @@ cd frontend
 npm install
 ```
 
-### 4. API 키 설정
+### 4. API 키 설정 (선택사항)
 
-이 프로젝트는 자연어 피드백 생성을 위해 GPT-4o를 사용합니다. OpenAI API 키가 필요합니다.
+이 프로젝트는 GPT-4o 분석 결과와의 비교 기능을 선택적으로 지원합니다. 우리 모델의 분석 결과를 GPT-4o와 비교해보고 싶다면 API 키를 설정하세요.
 
-1. [OpenAI Platform](https://platform.openai.com/api-keys)에 접속합니다
-2. 계정에 가입하거나 로그인합니다
-3. "API Keys" 메뉴에서 새로운 시크릿 키를 생성합니다
-4. `frontend/index.tsx` 파일을 열어 플레이스홀더를 발급받은 API 키로 교체합니다:
+1. [GitHub Models](https://github.com/marketplace/models) 또는 [OpenAI Platform](https://platform.openai.com/api-keys)에 접속합니다
+2. 회원가입 후 API 키를 발급받습니다
+3. `frontend/App.tsx` 파일을 열어 플레이스홀더를 발급받은 API 키로 교체합니다:
 
 ```typescript
-// frontend/index.tsx (약 14번째 줄)
-const OPENAI_API_KEY = "your-api-key-here";
+// frontend/App.tsx (약 14번째 줄)
+const API_KEYS = [
+  "your-api-key-here", // 발급받은 키로 교체
+];
 ```
 
-**주의:** API 키는 외부에 노출되지 않도록 주의하세요. 공개 레포지토리에 커밋하지 마세요.
+**참고:** 이 설정은 선택사항입니다. 핵심 분석 기능은 GPT API 없이도 동작합니다. API 키는 외부에 노출되지 않도록 주의하세요.
 
 ## 사용 방법
 
