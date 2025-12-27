@@ -119,16 +119,28 @@ cd frontend
 npm run dev
 ```
 
-**Terminal 3 - Ngrok (Optional, for external access):**
-```bash
-ngrok http 3000
-```
-
 ### Access
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
+
+### Ngrok Setup (Optional)
+
+Ngrok is only required if you need external access (e.g., testing on mobile devices). For local development, you can skip this step.
+
+1. Download ngrok from [ngrok.com](https://ngrok.com/download)
+2. Sign up and get your authtoken from [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken)
+3. Configure ngrok:
+```bash
+ngrok config add-authtoken YOUR_AUTH_TOKEN
+```
+4. Run ngrok:
+```bash
+ngrok http 3000
+```
+
+The public URL will be displayed in the ngrok terminal.
 
 ## Project Structure
 
@@ -331,16 +343,28 @@ cd frontend
 npm run dev
 ```
 
-**터미널 3 - Ngrok (선택사항, 외부 접속용):**
-```bash
-ngrok http 3000
-```
-
 ### 접속 주소
 
 - 프론트엔드: http://localhost:3000
 - 백엔드 API: http://localhost:8000
 - API 문서: http://localhost:8000/docs
+
+### Ngrok 설정 (선택사항)
+
+Ngrok은 외부 접속이 필요한 경우에만 사용합니다 (예: 모바일 기기에서 테스트). 로컬 개발 시에는 이 단계를 건너뛰어도 됩니다.
+
+1. [ngrok.com](https://ngrok.com/download)에서 ngrok을 다운로드합니다
+2. 회원가입 후 [ngrok 대시보드](https://dashboard.ngrok.com/get-started/your-authtoken)에서 authtoken을 발급받습니다
+3. ngrok을 설정합니다:
+```bash
+ngrok config add-authtoken YOUR_AUTH_TOKEN
+```
+4. ngrok을 실행합니다:
+```bash
+ngrok http 3000
+```
+
+공개 URL은 ngrok 터미널에 표시됩니다.
 
 ## 프로젝트 구조
 
