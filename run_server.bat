@@ -6,7 +6,7 @@ echo.
 
 :: 1. Start Python Backend (FastAPI) in a new window
 echo Starting Python Backend...
-start "TryAngle Backend" cmd /k "call conda activate tryangle && cd /d %~dp0backend && python -m uvicorn api_server_v3:app --reload --host 0.0.0.0 --port 8000"
+start "TryAngle Backend" cmd /k "call conda activate tryangle_v15 && cd /d %~dp0backend && python -m uvicorn api_server_v3:app --reload --host 0.0.0.0 --port 8000"
 
 :: Wait a moment for backend to initialize
 timeout /t 2 /nobreak >nul
