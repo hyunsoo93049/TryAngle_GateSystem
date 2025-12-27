@@ -615,23 +615,29 @@ class SmartFeedbackV7Gate:
 
         diff = abs(curr_ratio - ref_ratio)
 
+        # Always return feedback with dims info (like v6)
+        feedback = {
+            'passed': diff < 0.1,
+            'diff': diff,
+            'current_name': curr_name,
+            'target_name': ref_name,
+            'current_dims': [curr_shape[1], curr_shape[0]],  # [width, height]
+            'target_dims': [ref_shape[1], ref_shape[0]],
+            'action': '비율이 일치합니다' if diff < 0.1 else f"카메라 비율을 {ref_name}로 변경하세요"
+        }
+
         if diff < 0.1:
             if self.debug_mode:
                 print(f"  -> 종횡비 일치")
-            return 100, None
+            return 100, feedback
 
         score = max(30, 100 - (diff * 100))
 
         if self.debug_mode:
             print(f"  -> 종횡비 불일치 (점수: {score:.0f})")
 
-        return score, {
-            'issue': 'ASPECT_RATIO_MISMATCH',
-            'diff': diff,
-            'current_name': curr_name,
-            'target_name': ref_name,
-            'action': f"카메라 비율을 {ref_name}로 변경하세요"
-        }
+        feedback['issue'] = 'ASPECT_RATIO_MISMATCH'
+        return score, feedback
 
     def _check_framing_v6(self, curr_kpts: Dict, ref_kpts: Dict,
                          curr_shape: Tuple, ref_shape: Tuple) -> Tuple[float, Dict]:

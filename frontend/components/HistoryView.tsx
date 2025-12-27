@@ -1,13 +1,14 @@
 import React from 'react';
 import { HistoryItem } from '../types';
-import { Clock, Calendar, ArrowRight } from 'lucide-react';
+import { Clock, Calendar, ArrowRight, Trash2 } from 'lucide-react';
 
 interface HistoryViewProps {
     history: HistoryItem[];
     onSelect: (item: HistoryItem) => void;
+    onDelete: (id: string) => void;
 }
 
-export default function HistoryView({ history, onSelect }: HistoryViewProps) {
+export default function HistoryView({ history, onSelect, onDelete }: HistoryViewProps) {
     if (history.length === 0) {
         return (
             <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm mx-auto max-w-2xl mt-10">
@@ -40,7 +41,7 @@ export default function HistoryView({ history, onSelect }: HistoryViewProps) {
                         className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg hover:border-[#BE1818]/30 hover:-translate-y-1 transition-all group duration-300"
                     >
                         {/* Image Preview pairs */}
-                        <div className="flex h-40 w-full border-b border-slate-100">
+                        <div className="flex h-40 w-full border-b border-slate-100 relative">
                             <div className="w-1/2 relative bg-slate-100">
                                 <img src={item.refImageBase64} className="w-full h-full object-cover" alt="Ref" />
                                 <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded">REF</div>
@@ -49,6 +50,19 @@ export default function HistoryView({ history, onSelect }: HistoryViewProps) {
                                 <img src={item.userImageBase64} className="w-full h-full object-cover" alt="User" />
                                 <div className="absolute top-2 left-2 bg-[#BE1818] text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">USER</div>
                             </div>
+                            {/* Delete Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (confirm('이 기록을 삭제하시겠습니까?')) {
+                                        onDelete(item.id);
+                                    }
+                                }}
+                                className="absolute top-2 right-2 p-1.5 bg-red-500/80 hover:bg-red-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
+                                title="삭제"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
                         </div>
 
                         <div className="p-5">

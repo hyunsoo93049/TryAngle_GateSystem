@@ -43,16 +43,21 @@ const GateCard: React.FC<GateCardProps> = ({
       return (
         <div className="space-y-6 animate-fadeIn">
           {/* Shot Type */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm text-center">
-              <span className="text-xs uppercase text-gray-500 font-semibold tracking-wider">현재 샷 (Current)</span>
-              <p className="text-lg font-bold text-gray-800 break-keep">{d.shotType.current}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className={`p-3 rounded-lg border shadow-sm text-center min-w-0 ${d.shotType.current !== d.shotType.reference ? 'bg-amber-50 border-amber-200' : 'bg-white border-gray-100'}`}>
+              <span className="text-xs uppercase text-gray-500 font-semibold tracking-wider block">현재 샷 (Current)</span>
+              <p className={`text-base font-bold break-words leading-tight mt-1 ${d.shotType.current !== d.shotType.reference ? 'text-amber-600' : 'text-gray-800'}`}>{d.shotType.current}</p>
             </div>
-            <div className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm text-center">
-              <span className="text-xs uppercase text-gray-500 font-semibold tracking-wider">레퍼런스 (Ref)</span>
-              <p className="text-lg font-bold text-[#BE1818] break-keep">{d.shotType.reference}</p>
+            <div className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm text-center min-w-0">
+              <span className="text-xs uppercase text-gray-500 font-semibold tracking-wider block">레퍼런스 (Ref)</span>
+              <p className="text-base font-bold text-[#BE1818] break-words leading-tight mt-1">{d.shotType.reference}</p>
             </div>
           </div>
+          {d.shotType.current !== d.shotType.reference && (
+            <div className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg border border-amber-200 -mt-2 break-words">
+              <span className="inline-block">샷 타입이 다릅니다:</span> <span className="font-semibold">{d.shotType.current}</span> <span className="inline-block">→</span> <span className="font-semibold">{d.shotType.reference}</span>
+            </div>
+          )}
 
           {/* Subject Size Chart */}
           <div className="bg-white p-4 rounded-lg border border-gray-100">
@@ -141,16 +146,16 @@ const GateCard: React.FC<GateCardProps> = ({
     if (gate.gateId === 0) { // Aspect Ratio
       const d = gate.details;
       return (
-        <div className="grid grid-cols-2 gap-4 mt-2 animate-fadeIn">
-          <div className="bg-slate-50 p-4 rounded-lg text-center">
-            <div className="text-sm text-slate-500 mb-1">현재 (Current)</div>
-            <div className="font-mono font-bold text-lg">{d.current.width} x {d.current.height}</div>
-            <div className="text-xs text-[#BE1818] font-semibold bg-red-50 inline-block px-2 py-1 rounded mt-1">{d.current.label}</div>
-          </div>
-          <div className="bg-slate-50 p-4 rounded-lg text-center">
+        <div className="grid grid-cols-2 gap-3 mt-2 animate-fadeIn">
+          <div className="bg-slate-50 p-4 rounded-lg text-center min-w-0">
             <div className="text-sm text-slate-500 mb-1">레퍼런스 (Reference)</div>
-            <div className="font-mono font-bold text-lg">{d.reference.width} x {d.reference.height}</div>
-            <div className="text-xs text-[#BE1818] font-semibold bg-red-50 inline-block px-2 py-1 rounded mt-1">{d.reference.label}</div>
+            <div className="font-mono font-bold text-base sm:text-lg break-all">{d.reference.width} x {d.reference.height}</div>
+            <div className="text-xs text-[#BE1818] font-semibold bg-red-50 px-2 py-1 rounded mt-1 inline-block max-w-full truncate">{d.reference.label}</div>
+          </div>
+          <div className="bg-slate-50 p-4 rounded-lg text-center min-w-0">
+            <div className="text-sm text-slate-500 mb-1">현재 (Current)</div>
+            <div className="font-mono font-bold text-base sm:text-lg break-all">{d.current.width} x {d.current.height}</div>
+            <div className="text-xs text-[#BE1818] font-semibold bg-red-50 px-2 py-1 rounded mt-1 inline-block max-w-full truncate">{d.current.label}</div>
           </div>
         </div>
       );
@@ -199,32 +204,31 @@ const GateCard: React.FC<GateCardProps> = ({
 
       return (
         <div className="mt-4 animate-fadeIn">
-          <div className="relative h-20 bg-slate-100 rounded-lg mb-6 mx-12">
+          <div className="relative h-24 bg-slate-100 rounded-lg mb-6 mx-4 sm:mx-12">
             {/* Scale 0.0 - 1.0 */}
             <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-300 -translate-y-1/2 rounded"></div>
 
-            {/* Reference Marker */}
             {/* Reference Marker (Top) */}
             <div
-              className="absolute top-[30%] -translate-y-full flex flex-col items-center transition-all duration-500 z-10 group"
-              style={{ left: `${toPct(d.reference.val)}%` }}
+              className="absolute top-[25%] -translate-y-full flex flex-col items-center transition-all duration-500 z-10 group"
+              style={{ left: `clamp(15%, ${toPct(d.reference.val)}%, 85%)` }}
             >
-              <div className="text-[10px] bg-slate-800 text-white px-1.5 py-0.5 rounded mb-1 whitespace-nowrap shadow-sm opacity-90">
-                Ref: {d.reference.label || 'Unknown'} ({(d.reference.val || 0).toFixed(2)})
+              <div className="text-[9px] sm:text-[10px] bg-slate-800 text-white px-1 sm:px-1.5 py-0.5 rounded mb-1 max-w-[100px] sm:max-w-none text-center leading-tight shadow-sm opacity-90">
+                <span className="hidden sm:inline">Ref: </span>{d.reference.label || 'Unknown'} ({(d.reference.val || 0).toFixed(2)})
               </div>
               <div className="w-3 h-3 bg-slate-800 rounded-full border-2 border-white shadow-sm"></div>
-              <div className="w-0.5 h-6 bg-slate-300"></div>
+              <div className="w-0.5 h-4 sm:h-6 bg-slate-300"></div>
             </div>
 
             {/* Current Marker (Bottom) */}
             <div
-              className="absolute top-[70%] flex flex-col items-center transition-all duration-500 z-20 group"
-              style={{ left: `${toPct(d.current.val)}%` }}
+              className="absolute top-[75%] flex flex-col items-center transition-all duration-500 z-20 group"
+              style={{ left: `clamp(15%, ${toPct(d.current.val)}%, 85%)` }}
             >
-              <div className="w-0.5 h-6 bg-red-200"></div>
+              <div className="w-0.5 h-4 sm:h-6 bg-red-200"></div>
               <div className="w-4 h-4 bg-[#BE1818] rounded-full border-2 border-white shadow-md"></div>
-              <div className="text-xs font-bold text-[#BE1818] bg-red-50 px-2 py-0.5 rounded mt-1 whitespace-nowrap border border-red-100 shadow-sm">
-                Current: {d.current.label || 'Unknown'} ({(d.current.val || 0).toFixed(2)})
+              <div className="text-[10px] sm:text-xs font-bold text-[#BE1818] bg-red-50 px-1.5 sm:px-2 py-0.5 rounded mt-1 max-w-[100px] sm:max-w-none text-center leading-tight border border-red-100 shadow-sm">
+                <span className="hidden sm:inline">Current: </span>{d.current.label || 'Unknown'} ({(d.current.val || 0).toFixed(2)})
               </div>
             </div>
           </div>
@@ -287,34 +291,35 @@ const GateCard: React.FC<GateCardProps> = ({
   return (
     <div className={`border rounded-2xl transition-all duration-300 overflow-hidden ${getStatusColor(gate.status)} bg-white bg-opacity-100`}>
       <div
-        className={`p-5 flex items-center justify-between cursor-pointer ${isOpen ? 'border-b border-gray-100' : ''}`}
+        className={`p-4 sm:p-5 flex items-center justify-between cursor-pointer gap-3 ${isOpen ? 'border-b border-gray-100' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex items-center gap-4">
-          <div className={`p-2 rounded-full ${gate.status === 'passed' ? 'bg-green-100 text-green-600' : gate.status === 'warning' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600'}`}>
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+          <div className={`p-2 rounded-full shrink-0 ${gate.status === 'passed' ? 'bg-green-100 text-green-600' : gate.status === 'warning' ? 'bg-amber-100 text-amber-600' : 'bg-red-100 text-red-600'}`}>
             {getIcon(gate.status)}
           </div>
-          <div>
-            <h3 className="font-bold text-gray-900 text-lg flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-400 uppercase tracking-wider">Gate {gate.gateId}</span>
-              {gate.title}
+          <div className="min-w-0">
+            <h3 className="font-bold text-gray-900 text-base sm:text-lg flex flex-wrap items-center gap-1 sm:gap-2">
+              <span className="text-xs sm:text-sm font-medium text-gray-400 uppercase tracking-wider">Gate {gate.gateId}</span>
+              <span className="break-words">{gate.title}</span>
             </h3>
-            <p className="text-sm text-gray-500 mt-0.5">{gate.description}</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-2">{gate.description}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <div className="text-right hidden sm:block">
             <span className="block text-2xl font-bold text-gray-900">{gate.score}</span>
             <span className="text-xs text-gray-400 font-medium">점수 (SCORE)</span>
           </div>
-          {isOpen ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
+          <span className="sm:hidden text-lg font-bold text-gray-900">{gate.score}</span>
+          {isOpen ? <ChevronUp className="text-gray-400 shrink-0" /> : <ChevronDown className="text-gray-400 shrink-0" />}
         </div>
       </div>
 
       {isOpen && (
-        <div className="p-6 bg-white animate-fadeIn">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="p-4 sm:p-6 bg-white animate-fadeIn">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {/* Left: Data Visualization */}
             <div className="order-2 md:order-1">
               {renderVisuals()}
@@ -325,13 +330,13 @@ const GateCard: React.FC<GateCardProps> = ({
               <h4 className="font-bold text-gray-900 border-b pb-2">분석 피드백 (Analysis Feedback)</h4>
               <ul className="space-y-3">
                 {gate.feedback.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3 bg-slate-50 p-3 rounded-lg">
+                  <li key={idx} className="flex items-start gap-3 bg-slate-50 p-3 rounded-lg min-w-0">
                     {idx === 0 && gate.status !== 'passed' ? (
                       <Move className="w-5 h-5 text-[#BE1818] mt-0.5 shrink-0" />
                     ) : (
                       <div className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-2 shrink-0" />
                     )}
-                    <span className={`text-sm ${idx === 0 ? 'font-semibold text-gray-800' : 'text-gray-600'}`}>
+                    <span className={`text-sm break-words leading-relaxed ${idx === 0 ? 'font-semibold text-gray-800' : 'text-gray-600'}`}>
                       {item}
                     </span>
                   </li>
@@ -339,10 +344,14 @@ const GateCard: React.FC<GateCardProps> = ({
               </ul>
 
               {gate.status !== 'passed' && (
-                <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl">
+                <div className="mt-4 p-3 sm:p-4 bg-red-50 border border-red-100 rounded-xl">
                   <p className="text-xs font-bold text-[#BE1818] uppercase tracking-wider mb-1">추천 조정 (Recommendation)</p>
-                  <p className="text-sm text-[#991313]">
-                    위의 1순위 가이드를 따르면 점수를 약 15점 높일 수 있습니다.
+                  <p className="text-sm text-[#991313] break-words leading-relaxed">
+                    {gate.gateId === 0 && "카메라 설정에서 비율을 레퍼런스와 동일하게 변경하세요."}
+                    {gate.gateId === 1 && "위의 피드백을 참고하여 카메라 위치나 줌을 조정하세요."}
+                    {gate.gateId === 2 && "피사체가 목표 그리드 위치에 오도록 구도를 조정하세요."}
+                    {gate.gateId === 3 && "줌 레벨을 조정하여 레퍼런스와 유사한 압축감을 만드세요."}
+                    {gate.gateId === 4 && "어깨 기울기나 자세를 조정하세요."}
                   </p>
                 </div>
               )}

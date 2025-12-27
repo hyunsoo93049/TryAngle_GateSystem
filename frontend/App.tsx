@@ -9,12 +9,13 @@ import AnalyzingOverlay from './components/AnalyzingOverlay';
 import HistoryView from './components/HistoryView';
 import MobileUploadView from './MobileUploadView';
 
-// 👇 사용할 GitHub 토큰들을 배열에 넣어주세요. 순서대로 사용합니다.
+// API Keys from environment variables (set in .env.local)
+// VITE_GITHUB_TOKEN_1, VITE_GITHUB_TOKEN_2, VITE_GITHUB_TOKEN_3
 const API_KEYS = [
-  "YOUR_GITHUB_TOKEN_1", // 1번 키
-  "YOUR_GITHUB_TOKEN_2", // 2번 키
-  "YOUR_GITHUB_TOKEN_3"  // 3번 키
-];
+  import.meta.env.VITE_GITHUB_TOKEN_1 || "",
+  import.meta.env.VITE_GITHUB_TOKEN_2 || "",
+  import.meta.env.VITE_GITHUB_TOKEN_3 || ""
+].filter(key => key && key.length > 0);
 
 // Key Rotation Helper
 let currentKeyIndex = 0;
@@ -103,6 +104,13 @@ export default function App() {
     // Limit to 20 items to prevent localStorage overflow
     if (newHistory.length > 20) newHistory.shift();
 
+    setHistory(newHistory);
+    localStorage.setItem('tryangle_history', JSON.stringify(newHistory));
+  };
+
+  // Delete individual history item
+  const deleteHistoryItem = (id: string) => {
+    const newHistory = history.filter(item => item.id !== id);
     setHistory(newHistory);
     localStorage.setItem('tryangle_history', JSON.stringify(newHistory));
   };
@@ -310,8 +318,8 @@ export default function App() {
                       "score": number,
                       "description": "string",
                       "details": {
-                        "current": { "val": number, "label": "string" },
-                        "reference": { "val": number, "label": "string" }
+                        "current": { "val": number (0.0-1.0 normalized, 0=wide 1=tele), "label": "Wide|Standard|Moderate|Strong|Tele" },
+                        "reference": { "val": number (0.0-1.0 normalized), "label": "Wide|Standard|Moderate|Strong|Tele" }
                       },
                       "feedback": ["string"]
                     },
@@ -348,12 +356,23 @@ export default function App() {
       // Helper for rounding to 1 decimal place
       const toOneDecimal = (num: number) => Math.round(num * 10) / 10;
 
-      const processReport = (report: AnalysisReport) => {
+      const processReport = (report: AnalysisReport, isGptApi: boolean = false) => {
         report.finalScore = toOneDecimal(report.finalScore);
-        report.gates = report.gates.map(g => ({
-          ...g,
-          score: toOneDecimal(g.score)
-        }));
+        report.gates = report.gates.map(g => {
+          const processed = { ...g, score: toOneDecimal(g.score) };
+
+          // GPT API compression values: normalize 0~100 → 0~1
+          if (isGptApi && g.gateId === 3 && g.details) {
+            if (g.details.current?.val > 1) {
+              processed.details = {
+                ...g.details,
+                current: { ...g.details.current, val: g.details.current.val / 100 },
+                reference: { ...g.details.reference, val: (g.details.reference?.val || 0) / 100 }
+              };
+            }
+          }
+          return processed;
+        });
         if (report.summary) {
           report.summary.aspectRatioScore = toOneDecimal(report.summary.aspectRatioScore);
           report.summary.framingScore = toOneDecimal(report.summary.framingScore);
@@ -369,12 +388,12 @@ export default function App() {
       const cleanJson = jsonText.replace(/```json/g, '').replace(/```/g, '').trim();
       let jsonData = JSON.parse(cleanJson) as AnalysisReport;
 
-      // Enforce 1 Decimal
-      jsonData = processReport(jsonData);
+      // Enforce 1 Decimal + GPT API compression normalization
+      jsonData = processReport(jsonData, true);  // isGptApi = true
       setApiResult(jsonData);
 
-      // Process Algo Result
-      const cleanAlgo = processReport(algoResponse);
+      // Process Algo Result (no GPT normalization needed)
+      const cleanAlgo = processReport(algoResponse, false);
       setAlgoResult(cleanAlgo);
 
       // 5. SAVE TO HISTORY
@@ -475,7 +494,7 @@ export default function App() {
 
         {/* History View */}
         {view === 'history' && (
-          <HistoryView history={history} onSelect={handleHistorySelect} />
+          <HistoryView history={history} onSelect={handleHistorySelect} onDelete={deleteHistoryItem} />
         )}
 
         {/* Dashboard View */}
