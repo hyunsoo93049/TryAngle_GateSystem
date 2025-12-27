@@ -82,6 +82,22 @@ cd frontend
 npm install
 ```
 
+### 4. API Key Configuration
+
+This project uses GPT-4o for generating natural language feedback. You need to obtain an OpenAI API key.
+
+1. Go to [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Sign up or log in to your account
+3. Navigate to "API Keys" and create a new secret key
+4. Open `frontend/index.tsx` and replace the placeholder with your API key:
+
+```typescript
+// frontend/index.tsx (around line 14)
+const OPENAI_API_KEY = "your-api-key-here";
+```
+
+**Note:** Keep your API key private. Do not commit it to public repositories.
+
 ## Usage
 
 ### Quick Start (Windows)
@@ -277,6 +293,22 @@ pip install -r requirements.txt
 cd frontend
 npm install
 ```
+
+### 4. API 키 설정
+
+이 프로젝트는 자연어 피드백 생성을 위해 GPT-4o를 사용합니다. OpenAI API 키가 필요합니다.
+
+1. [OpenAI Platform](https://platform.openai.com/api-keys)에 접속합니다
+2. 계정에 가입하거나 로그인합니다
+3. "API Keys" 메뉴에서 새로운 시크릿 키를 생성합니다
+4. `frontend/index.tsx` 파일을 열어 플레이스홀더를 발급받은 API 키로 교체합니다:
+
+```typescript
+// frontend/index.tsx (약 14번째 줄)
+const OPENAI_API_KEY = "your-api-key-here";
+```
+
+**주의:** API 키는 외부에 노출되지 않도록 주의하세요. 공개 레포지토리에 커밋하지 마세요.
 
 ## 사용 방법
 
