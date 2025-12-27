@@ -1,5 +1,5 @@
 """
-TryAngle V6 FastAPI Server
+TryAngle V7 FastAPI Server
 React 앱과 연동하기 위한 API 서버
 
 실행 방법:
@@ -26,17 +26,17 @@ from pydantic import BaseModel
 current_dir = Path(__file__).parent
 sys.path.append(str(current_dir))
 
-# Import SmartFeedbackV6
+# Import SmartFeedbackV7Gate
 try:
-    from compare_final_improved_v6 import SmartFeedbackV6
+    from compare_final_improved_v7_gate import SmartFeedbackV7Gate
 except ImportError as e:
-    print(f"Error importing SmartFeedbackV6: {e}")
-    SmartFeedbackV6 = None
+    print(f"Error importing SmartFeedbackV7Gate: {e}")
+    SmartFeedbackV7Gate = None
 
 app = FastAPI(
-    title="TryAngle V6 API",
-    description="Photo composition analysis API using Gate System v6",
-    version="6.0.0"
+    title="TryAngle V7 API",
+    description="Photo composition analysis API using Gate System v7",
+    version="7.0.0"
 )
 
 # CORS - React 앱에서 접근 가능하도록 설정
@@ -54,9 +54,9 @@ analyzer = None
 def get_analyzer():
     global analyzer
     if analyzer is None:
-        if SmartFeedbackV6 is None:
-            raise HTTPException(status_code=500, detail="SmartFeedbackV6 not available")
-        analyzer = SmartFeedbackV6(debug_mode=True)
+        if SmartFeedbackV7Gate is None:
+            raise HTTPException(status_code=500, detail="SmartFeedbackV7Gate not available")
+        analyzer = SmartFeedbackV7Gate(debug_mode=True)
     return analyzer
 
 
@@ -81,7 +81,7 @@ def save_temp_file(upload_file: UploadFile) -> str:
 
 def convert_to_react_format(result: dict) -> dict:
     """
-    Convert SmartFeedbackV6 output to React app's expected format (types.ts)
+    Convert SmartFeedbackV7Gate output to React app's expected format (types.ts)
     """
     all_gates = result.get('all_gates', {})
     
@@ -271,7 +271,7 @@ def root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "analyzer_ready": SmartFeedbackV6 is not None}
+    return {"status": "healthy", "analyzer_ready": SmartFeedbackV7Gate is not None}
 
 
 @app.post("/analyze", response_model=AnalysisResponse)
@@ -280,19 +280,20 @@ async def analyze_images(
     current: UploadFile = File(..., description="Current image to analyze")
 ):
     """
-    Analyze two images using SmartFeedbackV6 Gate System.
+    Analyze two images using SmartFeedbackV7Gate Gate System.
     Returns analysis in React app compatible format.
+    Server mode: stop_on_fail=False (analyze all gates)
     """
     start_time = time.time()
-    
+
     # Save uploaded files
     ref_path = save_temp_file(reference)
     curr_path = save_temp_file(current)
-    
+
     try:
-        # Run analysis
+        # Run analysis (stop_on_fail=False for server mode - analyze all gates)
         analyzer = get_analyzer()
-        result = analyzer.analyze_with_gates(curr_path, ref_path)
+        result = analyzer.analyze_with_gates(curr_path, ref_path, stop_on_fail=False)
         
         # Convert to React format
         response = convert_to_react_format(result)
@@ -373,6 +374,6 @@ async def upload_mobile(
 
 if __name__ == "__main__":
     import uvicorn
-    print("Starting TryAngle V6 API Server...")
+    print("Starting TryAngle V7 API Server...")
     print("Docs: http://localhost:8000/docs")
     uvicorn.run(app, host="0.0.0.0", port=8000)
