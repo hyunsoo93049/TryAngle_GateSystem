@@ -1,0 +1,384 @@
+# TryAngle v1.5 Feedback Messages Configuration
+# 언어별 피드백 메시지 설정
+
+languages:
+  - ko  # 한국어
+  - en  # English
+
+# 기본 언어 설정
+default_language: ko
+
+# 피드백 메시지 정의
+messages:
+  # 제목 및 헤더
+  headers:
+    main_title:
+      ko: "[TryAngle v1.5] 133개 키포인트 정밀 분석"
+      en: "[TryAngle v1.5] 133 Keypoint Enhanced Analysis"
+
+    overall_score:
+      ko: "[전체 점수]"
+      en: "[Overall Score]"
+
+    improvement_potential:
+      ko: "[개선 가능 점수]"
+      en: "[Improvement Potential]"
+
+    keypoint_detection:
+      ko: "[키포인트 감지 현황]"
+      en: "[Keypoint Detection]"
+
+    priority_adjustments:
+      ko: "[우선순위별 조정사항]"
+      en: "[Priority Adjustments]"
+
+    detailed_guidance:
+      ko: "[상세 가이드]"
+      en: "[Detailed Guidance]"
+
+    pose_analysis:
+      ko: "[포즈 분석 요약]"
+      en: "[Pose Analysis Summary]"
+
+    next_steps:
+      ko: "[다음 단계]"
+      en: "[Next Steps]"
+
+  # 키포인트 라벨
+  keypoints:
+    body:
+      ko: "신체"
+      en: "Body"
+    face:
+      ko: "얼굴"
+      en: "Face"
+    hands:
+      ko: "손"
+      en: "Hands"
+    feet:
+      ko: "발"
+      en: "Feet"
+    current:
+      ko: "현재 사진"
+      en: "Current"
+    reference:
+      ko: "레퍼런스"
+      en: "Reference"
+
+  # 샷 타입
+  shot_types:
+    extreme_closeup:
+      ko: "익스트림 클로즈업"
+      en: "Extreme Closeup"
+      description:
+        ko: "얼굴 세부만 보임"
+        en: "Face details only"
+
+    closeup:
+      ko: "클로즈업"
+      en: "Closeup"
+      description:
+        ko: "얼굴과 어깨"
+        en: "Face and shoulders"
+
+    bust_shot:
+      ko: "바스트샷"
+      en: "Bust Shot"
+      description:
+        ko: "머리부터 가슴까지"
+        en: "Head to chest"
+
+    medium_shot:
+      ko: "미디엄샷"
+      en: "Medium Shot"
+      description:
+        ko: "머리부터 허리까지"
+        en: "Head to waist"
+
+    knee_shot:
+      ko: "무릎샷"
+      en: "Knee Shot"
+      description:
+        ko: "머리부터 무릎까지"
+        en: "Head to knees"
+
+    full_shot:
+      ko: "전신샷"
+      en: "Full Shot"
+      description:
+        ko: "머리부터 발끝까지"
+        en: "Head to toe"
+
+    long_shot:
+      ko: "롱샷"
+      en: "Long Shot"
+      description:
+        ko: "전신과 배경"
+        en: "Full body with background"
+
+  # 조정 카테고리
+  adjustment_categories:
+    shot_type:
+      ko: "구도"
+      en: "Framing"
+
+    posture:
+      ko: "자세"
+      en: "Posture"
+
+    face:
+      ko: "얼굴"
+      en: "Face"
+
+    gesture:
+      ko: "제스처"
+      en: "Gesture"
+
+    position:
+      ko: "위치"
+      en: "Position"
+
+  # 액션 메시지
+  actions:
+    shot_type_adjustment:
+      ko: "샷 타입 조정"
+      en: "Shot Type Adjustment"
+
+    shoulder_alignment:
+      ko: "어깨 정렬"
+      en: "Shoulder Alignment"
+
+    face_direction:
+      ko: "시선 방향 조정"
+      en: "Face Direction Adjustment"
+
+    hand_gesture:
+      ko: "손 모양 조정"
+      en: "Hand Gesture Adjustment"
+
+    position_adjustment:
+      ko: "인물 위치 조정"
+      en: "Subject Position Adjustment"
+
+  # 조정 방법
+  adjustment_methods:
+    camera_backward:
+      ko: "카메라를 뒤로 {}cm 이동"
+      en: "Move camera backward {}cm"
+
+    camera_forward:
+      ko: "카메라를 앞으로 {}cm 이동"
+      en: "Move camera forward {}cm"
+
+    zoom_in:
+      ko: "줌을 {}배 확대"
+      en: "Zoom in {}x"
+
+    zoom_out:
+      ko: "줌을 {}배 축소"
+      en: "Zoom out {}x"
+
+    include_more:
+      ko: "더 많은 신체 부위가 포함되도록 조정"
+      en: "Adjust to include more body parts"
+
+    focus_specific:
+      ko: "특정 부위에 집중하도록 조정"
+      en: "Focus on specific parts"
+
+    move_left:
+      ko: "왼쪽으로 {}% 이동"
+      en: "Move left {}%"
+
+    move_right:
+      ko: "오른쪽으로 {}% 이동"
+      en: "Move right {}%"
+
+    move_up:
+      ko: "위로 {}% 이동"
+      en: "Move up {}%"
+
+    move_down:
+      ko: "아래로 {}% 이동"
+      en: "Move down {}%"
+
+  # 자세 관련
+  posture:
+    shoulder_tilt:
+      ko: "어깨 기울기"
+      en: "Shoulder Tilt"
+
+    hip_balance:
+      ko: "골반 균형"
+      en: "Hip Balance"
+
+    stance_width:
+      ko: "스탠스 너비"
+      en: "Stance Width"
+
+    spine_alignment:
+      ko: "척추 정렬"
+      en: "Spine Alignment"
+
+    corrections:
+      lower_shoulder:
+        ko: "{}쪽 어깨를 {}도 낮추기"
+        en: "Lower {} shoulder by {} degrees"
+
+      level_hips:
+        ko: "골반을 수평으로 맞추기"
+        en: "Level the hips"
+
+      widen_stance:
+        ko: "발을 더 벌리기"
+        en: "Widen stance"
+
+      narrow_stance:
+        ko: "발을 더 모으기"
+        en: "Narrow stance"
+
+  # 손 제스처
+  hand_gestures:
+    open_palm:
+      ko: "손바닥 펴기"
+      en: "Open Palm"
+
+    fist:
+      ko: "주먹"
+      en: "Fist"
+
+    pointing:
+      ko: "가리키기"
+      en: "Pointing"
+
+    thumbs_up:
+      ko: "엄지 올리기"
+      en: "Thumbs Up"
+
+    peace:
+      ko: "브이"
+      en: "Peace Sign"
+
+    unknown:
+      ko: "알수없음"
+      en: "Unknown"
+
+  # 중요도 레벨
+  impact_levels:
+    high:
+      ko: "높음"
+      en: "High"
+
+    medium:
+      ko: "보통"
+      en: "Medium"
+
+    low:
+      ko: "낮음"
+      en: "Low"
+
+  # 일반 라벨
+  labels:
+    current:
+      ko: "현재"
+      en: "Current"
+
+    target:
+      ko: "목표"
+      en: "Target"
+
+    importance:
+      ko: "중요도"
+      en: "Impact"
+
+    items:
+      ko: "개"
+      en: "items"
+
+    points:
+      ko: "점"
+      en: "points"
+
+    left_hand:
+      ko: "왼손"
+      en: "Left"
+
+    right_hand:
+      ko: "오른손"
+      en: "Right"
+
+  # 상태 메시지
+  status:
+    match:
+      ko: "일치"
+      en: "Match"
+
+    mismatch:
+      ko: "불일치 - 조정 필요"
+      en: "Mismatch - adjustment needed"
+
+    adjustment_needed:
+      ko: "조정 필요"
+      en: "Adjustment needed"
+
+    face_detail_needed:
+      ko: "얼굴 디테일이 선명하게 보여야 함"
+      en: "Face details should be clearly visible"
+
+    hand_visible_needed:
+      ko: "손 제스처가 보여야 함"
+      en: "Hand gestures should be visible"
+
+  # 최종 메시지
+  final:
+    start_with:
+      ko: "먼저 시작하세요"
+      en: "Start with"
+
+    total_adjustments:
+      ko: "총 조정 필요 항목"
+      en: "Total adjustments needed"
+
+    estimated_improvement:
+      ko: "예상 개선 점수"
+      en: "Estimated improvement"
+
+    perfect_match:
+      ko: "레퍼런스와 매우 유사합니다!"
+      en: "Image closely matches reference!"
+
+    minor_adjustments:
+      ko: "완벽을 위한 미세 조정만 필요"
+      en: "Minor adjustments only for perfection"
+
+  # 화면 비율
+  screen_ratio:
+    coverage:
+      ko: "화면 차지 비율"
+      en: "Coverage"
+
+    detail_level:
+      ko: "디테일 수준"
+      en: "Detail Level"
+
+    high:
+      ko: "높음"
+      en: "High"
+
+    low:
+      ko: "낮음"
+      en: "Low"
+
+  # 에러 메시지
+  errors:
+    image_load_failed:
+      ko: "이미지 로드 실패"
+      en: "Failed to load image"
+
+    pose_detection_failed:
+      ko: "포즈 감지 실패"
+      en: "Pose detection failed"
+
+    file_not_found:
+      ko: "파일을 찾을 수 없습니다"
+      en: "File not found"
