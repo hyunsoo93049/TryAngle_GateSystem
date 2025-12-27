@@ -19,8 +19,12 @@ start "TryAngle Frontend" cmd /k "cd /d %~dp0frontend && npm run dev"
 where ngrok >nul 2>nul
 if %errorlevel%==0 (
     echo.
-    echo Ngrok detected. Do you want to start ngrok tunnel for external access?
-    choice /C YN /M "Start ngrok"
+    echo --------------------------------------------------------
+    echo   Ngrok detected!
+    echo   Y: Start ngrok for external access (mobile testing)
+    echo   N: Local only (http://localhost:3000)
+    echo --------------------------------------------------------
+    choice /C YN /M "Start ngrok tunnel"
     if errorlevel 2 goto skip_ngrok
     if errorlevel 1 (
         echo Starting Ngrok Tunnel...
