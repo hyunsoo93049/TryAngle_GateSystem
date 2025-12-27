@@ -1,5 +1,11 @@
 # TryAngle: Gate System for Photo Composition Analysis
 
+**Language / 언어:** [English](#english) | [한국어](#한국어)
+
+---
+
+# English
+
 A real-time photo composition analysis system that compares user photos against reference images using a multi-gate evaluation pipeline.
 
 ## Overview
@@ -174,6 +180,195 @@ This project is for research and educational purposes.
 ## Citation
 
 If you use this code in your research, please cite:
+
+```bibtex
+@misc{tryangle2024,
+  author = {TryAngle Team},
+  title = {TryAngle: Gate System for Photo Composition Analysis},
+  year = {2024},
+  publisher = {GitHub},
+  url = {https://github.com/hyunsoo93049/TryAngle_GateSystem}
+}
+```
+
+---
+
+# 한국어
+
+레퍼런스 이미지와 사용자 사진을 비교하여 실시간으로 구도를 분석하는 멀티 게이트 평가 시스템입니다.
+
+## 개요
+
+TryAngle Gate System은 인물 사진을 5개의 순차적 게이트를 통해 분석합니다:
+
+| 게이트 | 분석 항목 | 설명 |
+|--------|----------|------|
+| Gate 0 | 종횡비 | 이미지 비율 및 방향 비교 |
+| Gate 1 | 프레이밍 & 여백 | 샷 타입, 인물 크기, 여백 균형 평가 |
+| Gate 2 | 구도 & 그리드 | 삼분할 법칙 기반 피사체 위치 분석 |
+| Gate 3 | 압축감 (렌즈) | 깊이 분석을 통한 초점거리 특성 추정 |
+| Gate 4 | 포즈 디테일 | 신체 자세 및 정렬 감지 |
+
+## 아키텍처
+
+```
+프론트엔드 (React + Vite)     백엔드 (FastAPI)
+        |                          |
+        |   POST /api/analyze      |
+        | -----------------------> |
+        |                          |
+        |                   SmartFeedbackV6
+        |                          |
+        |              +-----------+-----------+
+        |              |           |           |
+        |         RTMPose    FramingAnalyzer  DepthAnything
+        |       (133 키포인트)  (샷 타입)      (압축감)
+        |              |           |           |
+        |              +-----------+-----------+
+        |                          |
+        | <----------------------- |
+        |        분석 결과          |
+```
+
+## 요구사항
+
+- Python 3.10 이상
+- Node.js 18 이상
+- CUDA 호환 GPU (권장)
+
+## 설치 방법
+
+### 1. 레포지토리 클론
+
+```bash
+git clone https://github.com/hyunsoo93049/TryAngle_GateSystem.git
+cd TryAngle_GateSystem
+```
+
+### 2. 백엔드 설정
+
+```bash
+# Conda 환경 생성
+conda create -n tryangle python=3.10 -y
+conda activate tryangle
+
+# PyTorch 설치 (CUDA 11.8)
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+
+# 의존성 설치
+pip install -r requirements.txt
+```
+
+### 3. 프론트엔드 설정
+
+```bash
+cd frontend
+npm install
+```
+
+## 사용 방법
+
+### 빠른 시작 (Windows)
+
+`run_server.bat` 파일을 더블클릭하면 모든 서비스가 시작됩니다.
+
+### 수동 시작
+
+**터미널 1 - 백엔드:**
+```bash
+conda activate tryangle
+cd backend
+python -m uvicorn api_server_v3:app --reload --host 0.0.0.0 --port 8000
+```
+
+**터미널 2 - 프론트엔드:**
+```bash
+cd frontend
+npm run dev
+```
+
+**터미널 3 - Ngrok (선택사항, 외부 접속용):**
+```bash
+ngrok http 3000
+```
+
+### 접속 주소
+
+- 프론트엔드: http://localhost:3000
+- 백엔드 API: http://localhost:8000
+- API 문서: http://localhost:8000/docs
+
+## 프로젝트 구조
+
+```
+TryAngle_GateSystem/
+├── backend/
+│   ├── api_server_v3.py              # FastAPI 서버
+│   ├── compare_final_improved_v6.py  # 메인 분석 로직 (SmartFeedbackV6)
+│   ├── rtmpose_wholebody_analyzer.py # 포즈 추정 (133개 키포인트)
+│   ├── framing_analyzer.py           # 샷 타입 & 프레이밍 분석
+│   ├── improved_margin_analyzer.py   # 여백 균형 분석
+│   ├── feedback_config.py            # 피드백 언어 설정
+│   ├── models/
+│   │   ├── grounding_dino.py         # 객체 검출 래퍼
+│   │   └── depth_anything.py         # 깊이 추정 래퍼
+│   └── legacy/
+│       └── reference_comparison.py   # 압축감 지수 계산
+├── frontend/
+│   ├── App.tsx                       # 메인 React 컴포넌트
+│   ├── components/
+│   │   ├── GateCard.tsx              # 게이트 결과 표시
+│   │   ├── Summary.tsx               # 점수 요약
+│   │   └── AnalyzingOverlay.tsx      # 로딩 애니메이션
+│   ├── types.ts                      # TypeScript 인터페이스
+│   └── vite.config.ts                # Vite 설정
+├── requirements.txt
+├── run_server.bat                    # Windows 실행 스크립트
+└── README.md
+```
+
+## API 레퍼런스
+
+### POST /analyze
+
+두 이미지를 분석하고 게이트별 비교 결과를 반환합니다.
+
+**요청:**
+- `reference`: 레퍼런스 이미지 파일 (multipart/form-data)
+- `current`: 사용자 이미지 파일 (multipart/form-data)
+
+**응답:**
+```json
+{
+  "timestamp": "2024-01-01T00:00:00",
+  "processingTime": 2.5,
+  "finalScore": 85.5,
+  "summary": {
+    "aspectRatioScore": 100,
+    "framingScore": 78,
+    "compositionScore": 90,
+    "compressionScore": 85
+  },
+  "overallFeedback": "레퍼런스와 비슷하지만 미세 조정이 필요합니다.",
+  "gates": [...]
+}
+```
+
+## 사용 모델
+
+| 모델 | 용도 | 출처 |
+|------|------|------|
+| RTMPose-Wholebody | 133개 키포인트 포즈 추정 | [rtmlib](https://github.com/Tau-J/rtmlib) |
+| Grounding DINO | 객체 검출 | [GroundingDINO](https://github.com/IDEA-Research/GroundingDINO) |
+| Depth Anything V2 | 단안 깊이 추정 | [Depth-Anything](https://github.com/LiheYoung/Depth-Anything) |
+
+## 라이선스
+
+이 프로젝트는 연구 및 교육 목적으로 제공됩니다.
+
+## 인용
+
+본 코드를 연구에 사용하실 경우 다음과 같이 인용해 주세요:
 
 ```bibtex
 @misc{tryangle2024,
