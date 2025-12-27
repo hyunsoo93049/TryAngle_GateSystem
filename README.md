@@ -30,10 +30,15 @@ Frontend (React + Vite)     Backend (FastAPI)
         |                          |
         |                   SmartFeedbackV6
         |                          |
+        |                   GroundingDINO
+        |                   (Person Detection)
+        |                          |
+        |                     person_bbox
+        |                          |
         |              +-----------+-----------+
         |              |           |           |
-        |         RTMPose    FramingAnalyzer  DepthAnything
-        |        (133 kpts)   (Shot Type)    (Compression)
+        |         RTMPose    MarginAnalyzer  DepthAnything
+        |        (133 kpts)  (Framing/Margins) (Compression)
         |              |           |           |
         |              +-----------+-----------+
         |                          |
@@ -122,15 +127,17 @@ TryAngle_GateSystem/
 │   ├── feedback_config.py            # Feedback language settings
 │   ├── models/
 │   │   ├── grounding_dino.py         # Object detection wrapper
-│   │   └── depth_anything.py         # Depth estimation wrapper
+│   │   ├── depth_anything.py         # Depth estimation wrapper
+│   │   └── rtmpose.py                # Pose estimation wrapper
 │   └── legacy/
 │       └── reference_comparison.py   # Compression index calculation
 ├── frontend/
-│   ├── App.tsx                       # Main React component
+│   ├── index.tsx                     # Main React component
 │   ├── components/
 │   │   ├── GateCard.tsx              # Gate result display
 │   │   ├── Summary.tsx               # Score summary
-│   │   └── AnalyzingOverlay.tsx      # Loading animation
+│   │   ├── AnalyzingOverlay.tsx      # Loading animation
+│   │   └── HistoryView.tsx           # Analysis history view
 │   ├── types.ts                      # TypeScript interfaces
 │   └── vite.config.ts                # Vite configuration
 ├── requirements.txt
@@ -219,10 +226,15 @@ TryAngle Gate System은 인물 사진을 5개의 순차적 게이트를 통해 �
         |                          |
         |                   SmartFeedbackV6
         |                          |
+        |                   GroundingDINO
+        |                   (인물 검출)
+        |                          |
+        |                     person_bbox
+        |                          |
         |              +-----------+-----------+
         |              |           |           |
-        |         RTMPose    FramingAnalyzer  DepthAnything
-        |       (133 키포인트)  (샷 타입)      (압축감)
+        |         RTMPose    MarginAnalyzer  DepthAnything
+        |       (133 키포인트)  (여백 분석)    (압축감)
         |              |           |           |
         |              +-----------+-----------+
         |                          |
@@ -311,15 +323,17 @@ TryAngle_GateSystem/
 │   ├── feedback_config.py            # 피드백 언어 설정
 │   ├── models/
 │   │   ├── grounding_dino.py         # 객체 검출 래퍼
-│   │   └── depth_anything.py         # 깊이 추정 래퍼
+│   │   ├── depth_anything.py         # 깊이 추정 래퍼
+│   │   └── rtmpose.py                # 포즈 추정 래퍼
 │   └── legacy/
 │       └── reference_comparison.py   # 압축감 지수 계산
 ├── frontend/
-│   ├── App.tsx                       # 메인 React 컴포넌트
+│   ├── index.tsx                     # 메인 React 컴포넌트
 │   ├── components/
 │   │   ├── GateCard.tsx              # 게이트 결과 표시
 │   │   ├── Summary.tsx               # 점수 요약
-│   │   └── AnalyzingOverlay.tsx      # 로딩 애니메이션
+│   │   ├── AnalyzingOverlay.tsx      # 로딩 애니메이션
+│   │   └── HistoryView.tsx           # 분석 히스토리 뷰
 │   ├── types.ts                      # TypeScript 인터페이스
 │   └── vite.config.ts                # Vite 설정
 ├── requirements.txt
