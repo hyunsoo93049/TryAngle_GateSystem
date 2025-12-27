@@ -83,7 +83,8 @@ def convert_to_react_format(result: dict) -> dict:
     """
     Convert SmartFeedbackV7Gate output to React app's expected format (types.ts)
     """
-    all_gates = result.get('all_gates', {})
+    # v7 uses 'gates_results', v6 used 'all_gates'
+    all_gates = result.get('gates_results', result.get('all_gates', {}))
     
     # Build gates array matching React's GateResult interface
     gates = []
