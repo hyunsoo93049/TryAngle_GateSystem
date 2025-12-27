@@ -85,17 +85,13 @@ def convert_to_react_format(result: dict) -> dict:
     """
     # v7 uses 'gates_results', v6 used 'all_gates'
     all_gates = result.get('gates_results', result.get('all_gates', {}))
-    
+
     # Build gates array matching React's GateResult interface
     gates = []
-    
+
     # Gate 0: Aspect Ratio
     aspect = all_gates.get('aspect_ratio', {})
-    aspect_fb = aspect.get('feedback', {})  # Now guaranteed to be dict even on pass
-    print(f"DEBUG: Aspect Feedback: {aspect_fb}")  # Debug Aspect Ratio Data Loss
-    
-    current_dims = aspect_fb.get('current_dims', (0, 0)) if isinstance(aspect_fb, dict) else (0, 0)
-    target_dims = aspect_fb.get('target_dims', (0, 0)) if isinstance(aspect_fb, dict) else (0, 0)
+    aspect_fb = aspect.get('feedback') or {}  # v7 returns null when passed
 
     gates.append({
         "gateId": 0,
@@ -105,37 +101,33 @@ def convert_to_react_format(result: dict) -> dict:
         "description": "레퍼런스 이미지와 가로세로 비율이 일치하는지 확인합니다.",
         "details": {
             "current": {
-                "width": current_dims[0], "height": current_dims[1],
-                "ratio": current_dims[0] / current_dims[1] if current_dims[1] > 0 else 0,
-                "label": aspect_fb.get('current_name', 'Unknown') if isinstance(aspect_fb, dict) else 'Unknown'
+                "label": aspect_fb.get('current_name', '일치') if aspect_fb else '일치'
             },
             "reference": {
-                "width": target_dims[0], "height": target_dims[1],
-                "ratio": target_dims[0] / target_dims[1] if target_dims[1] > 0 else 0,
-                "label": aspect_fb.get('target_name', 'Unknown') if isinstance(aspect_fb, dict) else 'Unknown'
+                "label": aspect_fb.get('target_name', '일치') if aspect_fb else '일치'
             }
         },
-        "feedback": [aspect_fb.get('action', '종횡비가 적절합니다')] if isinstance(aspect_fb, dict) else ["종횡비 분석 완료"]
+        "feedback": [aspect_fb.get('action', '종횡비가 일치합니다')] if aspect_fb else ["종횡비가 일치합니다"]
     })
-    
+
     # Gate 1: Framing
     framing = all_gates.get('framing', {})
     framing_details = framing.get('details', {})
     margin_analysis = framing_details.get('improved_margin_analysis', {})
     current_margins = margin_analysis.get('current_margins', {})
     ref_margins = margin_analysis.get('reference_margins', {})
-    
-    framing_fb_dict = framing_details.get('feedback', {})
-    # Friendly actions list
-    actions = framing_fb_dict.get('actions', [])
-    if not actions and framing_fb_dict.get('summary'):
-         actions = [framing_fb_dict.get('summary')]
+
+    # Get feedback from framing
+    framing_fb = framing.get('feedback') or {}
+    actions = framing_fb.get('actions', []) if framing_fb else []
+    if not actions:
+        actions = ["프레이밍 분석 완료"]
 
     gates.append({
         "gateId": 1,
         "title": "프레이밍 & 여백",
         "status": "passed" if framing.get('passed', False) else "warning",
-        "score": framing.get('score', 0),
+        "score": round(framing.get('score', 0)),
         "description": "샷 타입, 인물 크기, 여백의 균형을 정밀 분석합니다.",
         "details": {
             "shotType": {
@@ -147,7 +139,7 @@ def convert_to_react_format(result: dict) -> dict:
                 "current": round(framing_details.get('subject_ratio', {}).get('current_ratio', 0) * 100, 1),
                 "reference": round(framing_details.get('subject_ratio', {}).get('reference_ratio', 0) * 100, 1),
                 "score": framing_details.get('subject_ratio', {}).get('score', 0),
-                "diff": round(abs(framing_details.get('subject_ratio', {}).get('current_ratio', 0) - 
+                "diff": round(abs(framing_details.get('subject_ratio', {}).get('current_ratio', 0) -
                              framing_details.get('subject_ratio', {}).get('reference_ratio', 0)) * 100, 1)
             },
             "margins": {
@@ -166,91 +158,101 @@ def convert_to_react_format(result: dict) -> dict:
                     "refBottom": round(ref_margins.get('bottom', 0) * 100),
                     "status": margin_analysis.get('vertical', {}).get('status', 'Unknown'),
                     "score": margin_analysis.get('vertical', {}).get('score', 0),
-                    "adjustment": margin_analysis.get('vertical', {}).get('adjustment', {}) # Pass full adjustment dict for Tip
+                    "adjustment": margin_analysis.get('vertical', {}).get('adjustment', {})
                 },
                 "bottomIssue": margin_analysis.get('bottom_special', {}).get('special_message', '')
             }
         },
         "feedback": actions
     })
-    
+
     # Gate 2: Composition
     composition = all_gates.get('composition', {})
-    comp_feedback = composition.get('feedback', {}) # Now dict even on pass
-    
+    comp_feedback = composition.get('feedback') or {}
+
+    # v7 returns grid as list [x, y], convert to string
+    current_grid = comp_feedback.get('current_grid', [0, 0]) if comp_feedback else [0, 0]
+    target_grid = comp_feedback.get('target_grid', [0, 0]) if comp_feedback else [0, 0]
+    current_center = comp_feedback.get('current_center', [0.5, 0.5]) if comp_feedback else [0.5, 0.5]
+    target_center = comp_feedback.get('target_center', [0.5, 0.5]) if comp_feedback else [0.5, 0.5]
+
     gates.append({
         "gateId": 2,
         "title": "구도 & 그리드",
         "status": "passed" if composition.get('passed', False) else "warning",
-        "score": composition.get('score', 0),
+        "score": round(composition.get('score', 0)),
         "description": "주요 피사체(얼굴 등)의 기하학적 위치를 확인합니다.",
         "details": {
             "facePosition": {
-                "current": {"x": 0.5, "y": 0.5, "grid": comp_feedback.get('current_grid', '(?,?)') if isinstance(comp_feedback, dict) else "(?,?)"},
-                "reference": {"x": 0.5, "y": 0.5, "grid": comp_feedback.get('target_grid', '(?,?)') if isinstance(comp_feedback, dict) else "(?,?)"}
+                "current": {"x": current_center[0] if isinstance(current_center, list) else 0.5,
+                           "y": current_center[1] if isinstance(current_center, list) else 0.5,
+                           "grid": f"({current_grid[0]}, {current_grid[1]})" if isinstance(current_grid, list) else str(current_grid)},
+                "reference": {"x": target_center[0] if isinstance(target_center, list) else 0.5,
+                             "y": target_center[1] if isinstance(target_center, list) else 0.5,
+                             "grid": f"({target_grid[0]}, {target_grid[1]})" if isinstance(target_grid, list) else str(target_grid)}
             }
         },
-        "feedback": [comp_feedback.get('action', '구도 분석 완료')] if isinstance(comp_feedback, dict) else ["구도 분석 완료"]
+        "feedback": [f"현재 그리드 {current_grid} → 목표 그리드 {target_grid}"] if comp_feedback and comp_feedback.get('issue') else ["구도가 일치합니다"]
     })
-    
+
     # Gate 3: Compression
     compression = all_gates.get('compression', {})
-    comp_fb = compression.get('feedback', {}) # Now dict even on pass
-    
+    comp_fb = compression.get('feedback') or {}
+
     gates.append({
         "gateId": 3,
         "title": "압축감 (렌즈)",
         "status": "passed" if compression.get('passed', False) else "warning",
-        "score": compression.get('score', 0),
+        "score": round(compression.get('score', 0)),
         "description": "초점 거리와 원근감을 추정하여 분석합니다.",
         "details": {
             "current": {
-                "val": comp_fb.get('current_compression', 0) if isinstance(comp_fb, dict) else 0,
-                "label": comp_fb.get('current_lens', 'Unknown') if isinstance(comp_fb, dict) else "Unknown"
+                "val": comp_fb.get('current_compression', 0) if comp_fb else 0,
+                "label": comp_fb.get('current_lens', 'Unknown') if comp_fb else "Unknown"
             },
             "reference": {
-                "val": comp_fb.get('target_compression', 0) if isinstance(comp_fb, dict) else 0,
-                "label": comp_fb.get('target_lens', 'Unknown') if isinstance(comp_fb, dict) else "Unknown"
+                "val": comp_fb.get('target_compression', 0) if comp_fb else 0,
+                "label": comp_fb.get('target_lens', 'Unknown') if comp_fb else "Unknown"
             }
         },
-        "feedback": [line for line in comp_fb.get('adjustment', '압축감 분석 완료').split('\n') if line.strip()] if isinstance(comp_fb, dict) else ["압축감 분석 완료"] 
+        "feedback": [line for line in comp_fb.get('adjustment', '압축감 분석 완료').split('\n') if line.strip()] if comp_fb and comp_fb.get('adjustment') else ["압축감이 유사합니다"]
     })
-    
+
     # Gate 4: Pose
     pose = all_gates.get('pose', {})
-    pose_fb = pose.get('feedback', {}) # Now dict {'shoulder_angle':..., 'adjustments':...}
-    
-    # Extract suggestions
+    pose_fb = pose.get('feedback') or []  # v7 returns list of suggestions
+
+    # Extract suggestions - v7 format is list of dicts with 'suggestion' key
     suggestions = []
-    if isinstance(pose_fb, dict) and pose_fb.get('adjustments'):
-        suggestions = [adj['suggestion'] for adj in pose_fb['adjustments']]
+    if isinstance(pose_fb, list):
+        suggestions = [item.get('suggestion', '') for item in pose_fb if isinstance(item, dict) and item.get('suggestion')]
     if not suggestions:
         suggestions = ["포즈가 안정적입니다"]
 
     gates.append({
         "gateId": 4,
         "title": "포즈 디테일",
-        "status": "passed", # Pose is optional gate
+        "status": "passed" if pose.get('passed', True) else "warning",
         "score": 95,
         "description": "미세한 신체 동작과 자세를 분석합니다.",
         "details": {
-            "shoulderTilt": pose_fb.get('shoulder_angle', 0.0) if isinstance(pose_fb, dict) else 0.0
+            "suggestions": suggestions
         },
         "feedback": suggestions
     })
-    
+
     # Build summary
     summary = {
-        "aspectRatioScore": all_gates.get('aspect_ratio', {}).get('score', 0),
-        "framingScore": all_gates.get('framing', {}).get('score', 0),
-        "compositionScore": all_gates.get('composition', {}).get('score', 0),
-        "compressionScore": all_gates.get('compression', {}).get('score', 0)
+        "aspectRatioScore": round(all_gates.get('aspect_ratio', {}).get('score', 0)),
+        "framingScore": round(all_gates.get('framing', {}).get('score', 0)),
+        "compositionScore": round(all_gates.get('composition', {}).get('score', 0)),
+        "compressionScore": round(all_gates.get('compression', {}).get('score', 0))
     }
-    
+
     return {
         "timestamp": datetime.now().isoformat(),
         "processingTime": 0,  # Will be set by caller
-        "finalScore": result.get('overall_score', 0),
+        "finalScore": round(result.get('overall_score', 0)),
         "summary": summary,
         "overallFeedback": result.get('friendly_summary', '분석이 완료되었습니다.'),
         "gates": gates
