@@ -14,8 +14,7 @@ from dataclasses import dataclass, asdict
 
 # 경로 추가
 sys.path.append(str(Path(__file__).parent))
-sys.path.append(str(Path(__file__).parent.parent / "v1.5_learning"))
-sys.path.append(str(Path(__file__).parent.parent / "v1.5_learning" / "models"))
+sys.path.append(str(Path(__file__).parent.parent))
 
 from models.grounding_dino import GroundingDINOWrapper
 from models.depth_anything import DepthAnythingWrapper

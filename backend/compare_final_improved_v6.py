@@ -25,7 +25,6 @@ if sys.platform == 'win32':
 # 경로 추가
 sys.path.append(str(Path(__file__).parent))
 sys.path.append(str(Path(__file__).parent / "legacy"))
-sys.path.append(str(Path(__file__).parent.parent / "v1.5_learning"))
 
 # RTMPose Wholebody Analyzer 임포트
 from rtmpose_wholebody_analyzer import RTMPoseWholebodyAnalyzer

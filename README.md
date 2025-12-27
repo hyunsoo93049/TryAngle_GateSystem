@@ -153,6 +153,7 @@ TryAngle_GateSystem/
 │   ├── framing_analyzer.py           # Shot type & framing analysis
 │   ├── improved_margin_analyzer.py   # Margin balance analysis
 │   ├── feedback_config.py            # Feedback language settings
+│   ├── feedback_messages.yaml        # Bilingual feedback messages (ko/en)
 │   ├── models/
 │   │   ├── grounding_dino.py         # Object detection wrapper
 │   │   ├── depth_anything.py         # Depth estimation wrapper
@@ -161,12 +162,15 @@ TryAngle_GateSystem/
 │       └── reference_comparison.py   # Compression index calculation
 ├── frontend/
 │   ├── index.tsx                     # Main React component
+│   ├── App.tsx                       # App wrapper component
+│   ├── MobileUploadView.tsx          # Mobile upload interface
+│   ├── constants.ts                  # App constants
+│   ├── types.ts                      # TypeScript interfaces
 │   ├── components/
 │   │   ├── GateCard.tsx              # Gate result display
 │   │   ├── Summary.tsx               # Score summary
 │   │   ├── AnalyzingOverlay.tsx      # Loading animation
 │   │   └── HistoryView.tsx           # Analysis history view
-│   ├── types.ts                      # TypeScript interfaces
 │   └── vite.config.ts                # Vite configuration
 ├── requirements.txt
 ├── run_server.bat                    # Windows launcher
@@ -377,6 +381,7 @@ TryAngle_GateSystem/
 │   ├── framing_analyzer.py           # 샷 타입 & 프레이밍 분석
 │   ├── improved_margin_analyzer.py   # 여백 균형 분석
 │   ├── feedback_config.py            # 피드백 언어 설정
+│   ├── feedback_messages.yaml        # 다국어 피드백 메시지 (ko/en)
 │   ├── models/
 │   │   ├── grounding_dino.py         # 객체 검출 래퍼
 │   │   ├── depth_anything.py         # 깊이 추정 래퍼
@@ -385,12 +390,15 @@ TryAngle_GateSystem/
 │       └── reference_comparison.py   # 압축감 지수 계산
 ├── frontend/
 │   ├── index.tsx                     # 메인 React 컴포넌트
+│   ├── App.tsx                       # 앱 래퍼 컴포넌트
+│   ├── MobileUploadView.tsx          # 모바일 업로드 인터페이스
+│   ├── constants.ts                  # 앱 상수
+│   ├── types.ts                      # TypeScript 인터페이스
 │   ├── components/
 │   │   ├── GateCard.tsx              # 게이트 결과 표시
 │   │   ├── Summary.tsx               # 점수 요약
 │   │   ├── AnalyzingOverlay.tsx      # 로딩 애니메이션
 │   │   └── HistoryView.tsx           # 분석 히스토리 뷰
-│   ├── types.ts                      # TypeScript 인터페이스
 │   └── vite.config.ts                # Vite 설정
 ├── requirements.txt
 ├── run_server.bat                    # Windows 실행 스크립트
