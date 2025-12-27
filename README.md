@@ -20,7 +20,7 @@ TryAngle Gate System analyzes portrait photographs through 5 sequential gates:
 | Gate 3 | Compression (Lens) | Estimates focal length characteristics via depth analysis |
 | Gate 4 | Pose Details | Detects body posture and alignment |
 
-## Architecture
+## Architecture (Analysis Pipeline)
 
 ```
 Frontend (React + Vite)     Backend (FastAPI)
@@ -28,7 +28,7 @@ Frontend (React + Vite)     Backend (FastAPI)
         |   POST /api/analyze      |
         | -----------------------> |
         |                          |
-        |                   SmartFeedbackV6
+        |                 Gate Analysis Start
         |                          |
         |                   GroundingDINO
         |                   (Person Detection)
@@ -249,7 +249,7 @@ TryAngle Gate System은 인물 사진을 5개의 순차적 게이트를 통해 �
 | Gate 3 | 압축감 (렌즈) | 깊이 분석을 통한 초점거리 특성 추정 |
 | Gate 4 | 포즈 디테일 | 신체 자세 및 정렬 감지 |
 
-## 아키텍처
+## 아키텍처 (분석 파이프라인)
 
 ```
 프론트엔드 (React + Vite)     백엔드 (FastAPI)
@@ -257,7 +257,7 @@ TryAngle Gate System은 인물 사진을 5개의 순차적 게이트를 통해 �
         |   POST /api/analyze      |
         | -----------------------> |
         |                          |
-        |                   SmartFeedbackV6
+        |                  게이트 분석 시작
         |                          |
         |                   GroundingDINO
         |                   (인물 검출)
